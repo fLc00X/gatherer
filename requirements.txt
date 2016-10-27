@@ -1,1 +1,1 @@
-pip install gunicorn
+install gunicorn
