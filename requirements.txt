@@ -1,1 +1,2 @@
-install gunicorn
+Flask==0.11
+gunicorn==19.6
