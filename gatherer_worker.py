@@ -79,8 +79,10 @@ def updateStation(host, station, name):
     #    data = json.loads(data)
     #print 'code:' + str(code) + ',data:' + str(data)
 
+print 'gatherer_worker started'
+
 if __name__ == '__main__':
-    print 'gatherer_worker started'
+    print 'gatherer_worker started from "__main__"'
     while True:
         for station, name in stations.items():
             updateStation(host, station, name)
