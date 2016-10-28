@@ -1,1 +1,1 @@
-web: gunicorn gatherer_app.py --log-file -
+web: gunicorn gatherer_app:app --log-file -
