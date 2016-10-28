@@ -2,6 +2,7 @@
 
 import json
 import time
+import threading
 import urllib
 import urllib2
 
@@ -82,6 +83,18 @@ def gatherStations():
     stations = {'2731': 'Station@Someplace'}
     host = 'www.gasbuddy.com/Station'
     return [updateStation(host, station, name) for station, name in stations.items()]
+
+def worker():
+    """thread worker function"""
+    while True:
+        print str(threading.currentThread().ident) + \
+              ':worker@' + \
+              time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        time.sleep(60)
+    return
+
+t = threading.Thread(target = worker)
+t.start()
 
 if __name__ == '__main__':
     print 'gatherer_worker started from "__main__"'
