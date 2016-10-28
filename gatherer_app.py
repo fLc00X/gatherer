@@ -58,7 +58,7 @@ def gather_stations():
     #stations = {'2731': 'Station@Someplace'}
     #return flask.jsonify({'stations':
     #                      [gatherStation(host, station, name) for station, name in stations.items()]})
-    return flask.jsonify({'stations_from_worker': q.enqueue(gatherer_worker.gatherStations(), 'nothing')})
+    return flask.jsonify({'stations_from_worker': q.enqueue(gatherer_worker.gatherStations, 'nothing')})
 
 if __name__ == '__main__':
     print 'gatherer (' + app_version + ')'
