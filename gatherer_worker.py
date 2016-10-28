@@ -79,7 +79,9 @@ def updateStation(host, station, name):
     #    data = json.loads(data)
     #print 'code:' + str(code) + ',data:' + str(data)
 
-while True:
-    for station, name in stations.items():
-        updateStation(host, station, name)
-    time.sleep(3600)
+if __name__ == '__main__':
+    print 'gatherer_worker started'
+    while True:
+        for station, name in stations.items():
+            updateStation(host, station, name)
+            time.sleep(3600)
