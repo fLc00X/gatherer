@@ -1,9 +1,5 @@
 #!/bin/python
 
-import os
-import redis
-from rq import Worker, Queue, Connection
-
 import json
 import time
 import urllib
@@ -80,9 +76,6 @@ def updateStation(host, station, name):
     #print 'code:' + str(code) + ',data:' + str(data)
 
 print 'gatherer_worker started'
-
-redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-conn = redis.from_url(redis_url)
 
 def gatherStations():
     stations = {'2731': 'Station@Someplace'}
