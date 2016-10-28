@@ -83,10 +83,6 @@ def gatherStations():
     host = 'www.gasbuddy.com/Station'
     return [updateStation(host, station, name) for station, name in stations.items()]
 
-while True:
-    print 'gatherer_worker@' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-    time.sleep(60)
-
 if __name__ == '__main__':
     print 'gatherer_worker started from "__main__"'
     while True:
