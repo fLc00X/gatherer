@@ -1,5 +1,9 @@
 #!/bin/python
 
+import os
+import redis
+from rq import Worker, Queue, Connection
+
 import json
 import time
 import urllib
@@ -42,10 +46,6 @@ def publish(name, value):
     else:
         post(name, value)
 
-stations = {'2731': 'Station@Someplace'}
-
-host = 'www.gasbuddy.com/Station'
-
 def updateStation(host, station, name):
     # read & publish
     print 'station:' + station + ' (' + name + ')'
@@ -80,6 +80,14 @@ def updateStation(host, station, name):
     #print 'code:' + str(code) + ',data:' + str(data)
 
 print 'gatherer_worker started'
+
+redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+conn = redis.from_url(redis_url)
+
+def gatherStations():
+    stations = {'2731': 'Station@Someplace'}
+    host = 'www.gasbuddy.com/Station'
+    return [updateStation(host, station, name) for station, name in stations.items()]
 
 if __name__ == '__main__':
     print 'gatherer_worker started from "__main__"'
