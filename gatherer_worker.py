@@ -62,7 +62,7 @@ def updateStation(host, station, name):
                 'regular':  prices[0] if len(prices) > 0 else -1.00,
                 'midgrade': prices[1] if len(prices) > 1 else -1.00,
                 'premium':  prices[2] if len(prices) > 2 else -1.00}
-        print data
+        print 'gatherer_worker data:' + str(data)
     else:
         print "error occurred"
 
@@ -76,7 +76,6 @@ def updateStation(host, station, name):
     #print 'code:' + str(code) + ',data:' + str(data)
 
 print 'gatherer_worker started'
-print [updateStation(host, station, name) for station, name in stations.items()]
 
 def gatherStations():
     stations = {'2731': 'Station@Someplace'}
