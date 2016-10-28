@@ -1,15 +1,20 @@
 import flask
 
-api_version = '0.1'
-api_url_prefix = '/api/gatherer/v1'
+app_version = '0.1'
 
 app = flask.Flask(__name__)
 
-#@app.route(api_url_prefix + '/', methods = ['GET'])
 @app.route('/', methods = ['GET'])
 def content():
-    return flask.jsonify({'name': 'gatherer API',
-                          'version': api_version})
+    return flask.jsonify({'name': 'gatherer',
+                          'version': app_version})
+
+@app.route('/gatherer_app', methods = ['GET'])
+def text():
+    r = flask.make_response('gatherer_app')
+    r.mimetype = 'text/plain'
+    return r
+
 if __name__ == '__main__':
-    print 'gatherer API (' + api_version + ')'
+    print 'gatherer (' + app_version + ')'
     app.run(debug = False)
