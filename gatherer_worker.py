@@ -52,8 +52,8 @@ def worker():
 t = threading.Thread(target = worker)
 t.start()
 
-print 'gatherer_worker join'
-t.join()
+#print 'gatherer_worker join'
+#t.join()
 print 'gatherer_worker done'
 
 if __name__ == '__main__':
