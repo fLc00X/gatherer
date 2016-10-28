@@ -47,7 +47,7 @@ def worker():
     host = 'www.gasbuddy.com/Station'
     while True:
         print 'data:' + str([gatherStation(host, station, name) for station, name in stations.items()])
-        time.sleep(600)
+        time.sleep(60)
 
 t = threading.Thread(target = worker)
 t.start()
