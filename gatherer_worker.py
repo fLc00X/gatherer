@@ -76,6 +76,7 @@ def updateStation(host, station, name):
     #print 'code:' + str(code) + ',data:' + str(data)
 
 print 'gatherer_worker started'
+print [updateStation(host, station, name) for station, name in stations.items()]
 
 def gatherStations():
     stations = {'2731': 'Station@Someplace'}
