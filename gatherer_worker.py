@@ -63,6 +63,7 @@ def updateStation(host, station, name):
                 'midgrade': prices[1] if len(prices) > 1 else -1.00,
                 'premium':  prices[2] if len(prices) > 2 else -1.00}
         print 'gatherer_worker data:' + str(data)
+        return data
     else:
         print "error occurred"
 
