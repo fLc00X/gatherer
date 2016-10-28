@@ -3,7 +3,6 @@ import json
 import time
 import urllib
 import urllib2
-from rq import Queue
 
 import gatherer_worker
 
@@ -35,10 +34,9 @@ def gatherStation(host, station, name):
     else:
         print "error occurred"
 
-app_version = '0.3'
+app_version = '0.4'
 
 app = flask.Flask(__name__)
-q = Queue(connection = gatherer_worker.conn)
 
 @app.route('/', methods = ['GET'])
 def content():
@@ -58,7 +56,7 @@ def gather_stations():
     #stations = {'2731': 'Station@Someplace'}
     #return flask.jsonify({'stations':
     #                      [gatherStation(host, station, name) for station, name in stations.items()]})
-    return flask.jsonify({'stations_from_worker': q.enqueue(gatherer_worker.gatherStations, 'nothing')})
+    return flask.jsonify({'stations_from_worker': gatherer_worker.gatherStations()})
 
 if __name__ == '__main__':
     print 'gatherer (' + app_version + ')'
