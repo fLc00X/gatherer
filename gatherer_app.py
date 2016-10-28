@@ -15,7 +15,6 @@ def readUrl(url):
         return (-1, "readUrl::error occurred:" + str(error))
 
 def gatherStation(host, station, name):
-    # read & publish
     print 'station:' + station + ' (' + name + ')'
     print 'http://' + host + '/' + station
     code, data = readUrl('http://' + host + '/' + station)
@@ -24,12 +23,6 @@ def gatherStation(host, station, name):
         for line in data.split('\n'):
             if 'price-display credit-price' in line:
                 prices.append(line.split('>')[1].split('<')[0])
-        #publish('/gasstations/' + station + '/latest',
-        #        {'timestamp': time.strftime('%Y-%m-%d %H:%M:%S',
-        #                                    time.localtime()),
-        #         'regular':  prices[0] if len(prices) > 0 else -1.00,
-        #         'midgrade': prices[1] if len(prices) > 1 else -1.00,
-        #         'premium':  prices[2] if len(prices) > 2 else -1.00})
         data = {'timestamp': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
                 'regular':  prices[0] if len(prices) > 0 else -1.00,
                 'midgrade': prices[1] if len(prices) > 1 else -1.00,
@@ -38,15 +31,6 @@ def gatherStation(host, station, name):
         return data
     else:
         print "error occurred"
-
-    # verify
-    #code, data = readUrl(apiUri + \
-    #                     '/gasstations/' + station + '/latest' + \
-    #                     '?' + \
-    #                     urllib.urlencode({'api_key': apiGetKey}))
-    #if code == 200:
-    #    data = json.loads(data)
-    #print 'code:' + str(code) + ',data:' + str(data)
 
 app_version = '0.1'
 
@@ -59,16 +43,17 @@ def content():
 
 @app.route('/text', methods = ['GET'])
 def text():
-    r = flask.make_response('gatherer_app')
+    r = flask.make_response('text')
     r.mimetype = 'text/plain'
     return r
 
 @app.route('/gather_stations', methods = ['GET'])
 def gather_stations():
-    print 'gatherer_worker started'
+    print 'gatherer_stations started'
     host = 'www.gasbuddy.com/Station'
     stations = {'2731': 'Station@Someplace'}
-    return flask.jsonify([gatherStation(host, station, name) for station, name in stations.items()])
+    return flask.jsonify({'stations':
+                          [gatherStation(host, station, name) for station, name in stations.items()]})
 
 if __name__ == '__main__':
     print 'gatherer (' + app_version + ')'
