@@ -44,14 +44,31 @@ def gatherStation(host, station, name):
                 'midgrade': -1.00,
                 'premium': -1.00}
 
-def worker():
-    stations = {'2731': 'Station@Someplace'}
-    host = 'www.gasbuddy.com/Station'
-    interval = 60
+        stations = os.environ['GATHERER_WORKER_GAS_STATIONS_LIST']
+    
+    stations = [e for e ]
+    interval = int(os.environ['GATHERER_WORKER_GAS_STATIONS_INTERVAL'])
 
+def getVar(name):
+    v = os.environ.get(name)
+    if v:
+        return v
+    else:
+        rise Exception(v + ' is not set up')
+
+def getStations():
+    return [tuple(s.split(':')) for s in getVar('GATHERER_WORKER_GAS_STATIONS_STATIONS').split(',')]
+
+def getHost():
+    return getVar('GATHERER_WORKER_GAS_STATIONS_HOST')
+
+def getInterval():
+    return int(getVar('GATHERER_WORKER_GAS_STATIONS_INTERVAL'))
+
+def worker():
     while True:
-        log('data:' + str([gatherStation(host, station, name) for station, name in stations.items()]))
-        time.sleep(interval)
+        log('data:' + str([gatherStation(getHost(), station, name) for station, name in getStations()]))
+        time.sleep(getInterval())
 
 log(__name__)
 if __name__ == '__main__':
