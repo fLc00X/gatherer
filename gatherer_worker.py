@@ -64,8 +64,7 @@ def getInterval():
     return int(getVar('GATHERER_WORKER_GAS_STATIONS_INTERVAL'))
 
 def getRxtxApi():
-    return rxtxapi.RxtxApi(getVar('RXTXAPI_HOST'),
-                           getVar('RXTXAPI_URI'),
+    return rxtxapi.RxtxApi(getVar('RXTXAPI_URI'),
                            {'POST': getVar('RXTXAPI_POST_KEY'),
                             'PUT': getVar('RXTXAPI_PUT_KEY'),
                             'GET': getVar('RXTXAPI_GET_KEY'),
