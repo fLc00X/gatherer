@@ -5,8 +5,7 @@ import urllib
 import urllib2
 
 class RxtxApi():
-    def __init__(self, host, uri, keys, timeout = 10):
-        self.host = host
+    def __init__(self, uri, keys, timeout = 10):
         self.uri = uri
         self.keys = keys
         self.timeout = timeout
