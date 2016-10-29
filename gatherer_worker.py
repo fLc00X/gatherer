@@ -5,6 +5,9 @@ import threading
 import urllib
 import urllib2
 
+def log(message):
+    print 'gatherer_worker|' + message
+
 def readUrl(url):
     request = urllib2.Request(url)
     try:
@@ -41,23 +44,21 @@ def gatherStation(host, station, name):
                 'midgrade': -1.00,
                 'premium': -1.00}
 
+stations = {'2731': 'Station@Someplace'}
+host = 'www.gasbuddy.com/Station'
+interval = 60
+
 def worker():
     """thread worker function"""
-    stations = {'2731': 'Station@Someplace'}
-    host = 'www.gasbuddy.com/Station'
     while True:
-        print 'data:' + str([gatherStation(host, station, name) for station, name in stations.items()])
-        time.sleep(60)
+        log 'data:' + str([gatherStation(host, station, name) for station, name in stations.items()])
+        time.sleep(interval)
 
-t = threading.Thread(target = worker)
-t.start()
-
-#print 'gatherer_worker join'
-#t.join()
-print 'gatherer_worker done'
-
+log(__name__)
 if __name__ == '__main__':
-    while True:
-        for station, name in stations.items():
-            print str(gatherStation(host, station, name))
-            time.sleep(600)
+    worker()
+else:
+    t = threading.Thread(target = worker)
+    t.start()
+    #t.join()
+log 'done'
