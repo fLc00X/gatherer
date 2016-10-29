@@ -6,6 +6,8 @@ import threading
 import urllib
 import urllib2
 
+import rxtxapi
+
 def log(message):
     print 'gatherer_worker|' + message
 
@@ -61,12 +63,23 @@ def getHost():
 def getInterval():
     return int(getVar('GATHERER_WORKER_GAS_STATIONS_INTERVAL'))
 
+def getRxtxApi():
+    return rxtxapi.RxtxApi(getVar('RXTXAPI_HOST'),
+                           getVar('RXTXAPI_URI'),
+                           {'POST': getVar('RXTXAPI_POST_KEY'),
+                            'PUT': getVar('RXTXAPI_PUT_KEY'),
+                            'GET': getVar('RXTXAPI_GET_KEY'),
+                            'DELETE': getVar('RXTXAPI_DELETE_KEY')})
+
 def worker():
     while True:
-        log('data:' + str([gatherStation(getHost(), station, name) for station, name in getStations()]))
+        api = getRxtxApi()
+        for d in [gatherStation(getHost(), station, name) for station, name in getStations()]:
+            log('publish:' + str(d))
+            api.publish('/gasstations/' + d['station'] + '/latest', d)
         time.sleep(getInterval())
 
-log('version 0.1')
+log('version 0.2')
 log(__name__)
 if __name__ == '__main__':
     worker()
