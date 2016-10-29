@@ -29,28 +29,28 @@ class RxtxApi():
         else:
             return data
 
-    def post(self, parameter, data, to_json = True):
-        request = urllib2.Request(self.uri + '/' + parameter,
+    def post(self, name, value, to_json = True):
+        code, data = self.readUrl(self.uri + '/' + name + '?' + \
                                   urllib.urlencode(
-                                  {'api_key': self.keys['POST'],
-                                   'parameter': parameter,
-                                   'value': self.jsonify(data, to_json)}))
-        response = urllib2.urlopen(request, timeout = self.timeout)
+                                  {'method': 'POST',
+                                   'api_key': self.keys['POST'],
+                                   'name': name,
+                                   'value': self.jsonify(value, to_json)}))
 
-    def put(self, parameter, data, to_json = True):
-        code, data = self.readUrl(self.uri + '/' + parameter + '?' + \
+    def put(self, name, value, to_json = True):
+        code, data = self.readUrl(self.uri + '/' + name + '?' + \
                                   urllib.urlencode(
                                   {'method': 'PUT',
                                    'api_key': self.keys['PUT'],
-                                   'value': self.jsonify(data, to_json)}))
+                                   'value': self.jsonify(value, to_json)}))
 
-    def get(self, parameter):
-        return self.readUrl(self.uri + '/' + parameter + '?' + \
+    def get(self, name):
+        return self.readUrl(self.uri + '/' + name + '?' + \
                             urllib.urlencode({'api_key': self.keys['GET']}))
 
-    def publish(self, parameter, data, to_json = True):
-        code, data = self.get(parameter)
+    def publish(self, name, value, to_json = True):
+        code, data = self.get(name)
         if code == 200:
-            self.put(parameter, data, to_json)
+            self.put(name, value, to_json)
         else:
-            self.post(parameter, data, to_json)
+            self.post(name, value, to_json)
