@@ -1,2 +1,2 @@
 # gatherer
-Gatherer
+Gatherer.
