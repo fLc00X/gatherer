@@ -44,14 +44,13 @@ def gatherStation(host, station, name):
                 'midgrade': -1.00,
                 'premium': -1.00}
 
-stations = {'2731': 'Station@Someplace'}
-host = 'www.gasbuddy.com/Station'
-interval = 60
-
 def worker():
-    """thread worker function"""
+    stations = {'2731': 'Station@Someplace'}
+    host = 'www.gasbuddy.com/Station'
+    interval = 60
+
     while True:
-        log 'data:' + str([gatherStation(host, station, name) for station, name in stations.items()])
+        log('data:' + str([gatherStation(host, station, name) for station, name in stations.items()]))
         time.sleep(interval)
 
 log(__name__)
@@ -61,4 +60,4 @@ else:
     t = threading.Thread(target = worker)
     t.start()
     #t.join()
-log 'done'
+log('done')
