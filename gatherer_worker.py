@@ -44,11 +44,6 @@ def gatherStation(host, station, name):
                 'midgrade': -1.00,
                 'premium': -1.00}
 
-        stations = os.environ['GATHERER_WORKER_GAS_STATIONS_LIST']
-    
-    stations = [e for e ]
-    interval = int(os.environ['GATHERER_WORKER_GAS_STATIONS_INTERVAL'])
-
 def getVar(name):
     v = os.environ.get(name)
     if v:
