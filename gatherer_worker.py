@@ -49,7 +49,7 @@ def getVar(name):
     if v:
         return v
     else:
-        rise Exception(v + ' is not set up')
+        rise Exception(name + ' is not set up')
 
 def getStations():
     return [tuple(s.split(':')) for s in getVar('GATHERER_WORKER_GAS_STATIONS_STATIONS').split(',')]
