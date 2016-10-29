@@ -71,7 +71,7 @@ def worker():
         time.sleep(getInterval())
 
 log('version 0.1')
-log(__name__ + 'version')
+log(__name__)
 if __name__ == '__main__':
     worker()
 else:
