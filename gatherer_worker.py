@@ -70,7 +70,8 @@ def worker():
         log('data:' + str([gatherStation(getHost(), station, name) for station, name in getStations()]))
         time.sleep(getInterval())
 
-log(__name__)
+log('version 0.1')
+log(__name__ + 'version')
 if __name__ == '__main__':
     worker()
 else:
