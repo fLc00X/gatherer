@@ -76,7 +76,7 @@ def worker():
         api = getRxtxApi()
         for d in [gatherStation(getHost(), station, name) for station, name in getStations()]:
             log('publish:' + str(d))
-            api.publish('/gasstations/' + d['station'] + '/latest', d)
+            api.publish('gasstations/' + d['station'] + '/latest', d)
         time.sleep(getInterval())
 
 log('version 0.2')
