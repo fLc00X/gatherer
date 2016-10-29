@@ -5,11 +5,11 @@ import urllib
 import urllib2
 
 class RxtxApi():
-     def __init__(self, host, uri, keys, timeout = 10):
-         self.host = host
-         self.uri = uri
-         self.keys = keys
-         self.timeout = timeout
+    def __init__(self, host, uri, keys, timeout = 10):
+        self.host = host
+        self.uri = uri
+        self.keys = keys
+        self.timeout = timeout
 
     def readUrl(self, url):
         request = urllib2.Request(url)
