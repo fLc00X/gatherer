@@ -50,6 +50,7 @@ class RxtxApi():
 
     def publish(self, name, value, to_json = True):
         code, data = self.get(name)
+        print 'publish:code=' + str(code) + ',data=' + str(data)
         if code == 200:
             self.put(name, value, to_json)
         else:
