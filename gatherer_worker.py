@@ -30,7 +30,7 @@ def gatherStation(host, station, name):
         prices = []
         for line in data.split('\n'):
             if 'price-display' in line:
-                if ' credit-price' in line
+                if 'credit-price' in line:
                     prices.append(line.split('>')[1].split('<')[0])
                 else:
                     prices.append('-1.00')
