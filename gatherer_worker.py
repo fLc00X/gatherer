@@ -1,7 +1,7 @@
 #!/bin/python
 
 import os
-import time
+import datetime
 import threading
 import urllib
 import urllib2
@@ -22,7 +22,7 @@ def readUrl(url):
         return (-1, "readUrl::error occurred:" + str(error))
 
 def timestamp():
-    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    return datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
 
 def gatherStation(host, station, name):
     code, data = readUrl('http://' + host + '/' + station)
@@ -81,7 +81,7 @@ def worker():
             api.publish('gas_stations/' + d['station'], d)
         time.sleep(getInterval())
 
-log('version 0.5')
+log('version 0.6')
 log(__name__)
 if __name__ == '__main__':
     worker()
