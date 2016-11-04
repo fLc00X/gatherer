@@ -1,1 +1,1 @@
-worker: python -u gatherer_worker.py
+worker: python -u gatherer.py
