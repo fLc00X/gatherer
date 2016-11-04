@@ -23,7 +23,7 @@ def readUrl(url):
         return (-1, "readUrl::error occurred:" + str(error))
 
 def timestamp():
-    return datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+    return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
 
 def gatherStation(host, station, name):
     code, data = readUrl('http://' + host + '/' + station)
