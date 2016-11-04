@@ -33,7 +33,7 @@ def gatherStation(host, station, name):
                 if 'credit-price' in line:
                     prices.append(line.split('>')[1].split('<')[0])
                 else:
-                    prices.append('-1.00')
+                    prices.append(-1.00)
         return {'station': station,
                 'name': name,
                 'status': 'ok',
@@ -81,7 +81,7 @@ def worker():
             api.publish('gas_stations/' + d['station'], d)
         time.sleep(getInterval())
 
-log('version 0.4')
+log('version 0.5')
 log(__name__)
 if __name__ == '__main__':
     worker()
