@@ -10,7 +10,7 @@ import urllib2
 import rxtxapi
 
 def log(message):
-    print 'gatherer_worker|' + message
+    print 'gatherer|' + message
 
 def readUrl(url):
     request = urllib2.Request(url)
@@ -25,8 +25,8 @@ def readUrl(url):
 def timestamp():
     return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
 
-def gatherStation(host, station, name):
-    code, data = readUrl('http://' + host + '/' + station)
+def gatherStation(url, station, name):
+    code, data = readUrl(url + '/' + station)
     if code == 200:
         prices = []
         for line in data.split('\n'):
@@ -52,17 +52,16 @@ def gatherStation(host, station, name):
                 'premium': -1.00}
 
 def getVar(name):
-    v = os.environ.get(name)
-    if v:
-        return v
+    if os.environ.get(name):
+        return os.environ[name]
     else:
         raise Exception(name + ' is not set up')
 
 def getStations():
     return [tuple(s.split(':')) for s in getVar('GATHERER_WORKER_GAS_STATIONS_STATIONS').split(',')]
 
-def getHost():
-    return getVar('GATHERER_WORKER_GAS_STATIONS_HOST')
+def getUrl():
+    return getVar('GATHERER_WORKER_GAS_STATIONS_URL')
 
 def getInterval():
     return int(getVar('GATHERER_WORKER_GAS_STATIONS_INTERVAL'))
@@ -77,17 +76,16 @@ def getRxtxApi():
 def worker():
     while True:
         api = getRxtxApi()
-        for d in [gatherStation(getHost(), station, name) for station, name in getStations()]:
+        for d in [gatherStation(getUrl(), station, name) for station, name in getStations()]:
             log('publish:' + str(d))
             api.publish('gas_stations/' + d['station'], d)
         time.sleep(getInterval())
 
-log('version 0.6')
+log('version 0.7')
 log(__name__)
 if __name__ == '__main__':
     worker()
 else:
     t = threading.Thread(target = worker)
     t.start()
-    #t.join()
 log('done')
