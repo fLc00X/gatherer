@@ -29,7 +29,7 @@ def gatherStation(host, station, name):
     if code == 200:
         prices = []
         for line in data.split('\n'):
-            if 'price-display' in line:
+            if '<div class="price-display' in line:
                 if 'credit-price' in line:
                     prices.append(line.split('>')[1].split('<')[0])
                 else:
@@ -81,7 +81,7 @@ def worker():
             api.publish('gas_stations/' + d['station'], d)
         time.sleep(getInterval())
 
-log('version 0.3')
+log('version 0.4')
 log(__name__)
 if __name__ == '__main__':
     worker()
