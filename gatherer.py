@@ -24,14 +24,14 @@ def worker():
     gasolineGatherer = GasolineGatherer(int(getVar('GATHERER_WORKER_GAS_STATIONS_INTERVAL')),
                                         api,
                                         getVar('GATHERER_WORKER_GAS_STATIONS_URL'),
-                                        [tuple(s.split(':')) for s in getVar('GATHERER_WORKER_GAS_STATIONS_STATIONS').split(',')]
+                                        [s.split(':') for s in getVar('GATHERER_WORKER_GAS_STATIONS_STATIONS').split(',')])
     while True:
         data = gasolineGatherer.gather()
         if data:
             log('gasolineGatherer:' + str(data))
         time.sleep(int(getVar('GATHERER_WORKER_INTERVAL')))
 
-log('version 0.8')
+log('version 0.9')
 log(__name__)
 if __name__ == '__main__':
     worker()
