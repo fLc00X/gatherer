@@ -4,7 +4,7 @@ import datetime
 import urllib2
 
 class BaseGatherer(object):
-    def __init__(self, interval = 60, rxtxapi):
+    def __init__(self, interval, rxtxapi):
         self.interval = datetime.timedelta(0, interval, 0)
         self.last_run = None;
         self.rxtxapi = rxtxapi
