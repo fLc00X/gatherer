@@ -26,7 +26,9 @@ def worker():
                                         getVar('GATHERER_WORKER_GAS_STATIONS_URL'),
                                         [tuple(s.split(':')) for s in getVar('GATHERER_WORKER_GAS_STATIONS_STATIONS').split(',')]
     while True:
-        log('gasolineGatherer:' + str(gasolineGatherer.gather()))
+        data = gasolineGatherer.gather()
+        if data:
+            log('gasolineGatherer:' + str(data))
         time.sleep(int(getVar('GATHERER_WORKER_INTERVAL')))
 
 log('version 0.8')
