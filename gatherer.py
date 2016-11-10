@@ -38,6 +38,5 @@ log(__name__)
 if __name__ == '__main__':
     gather()
 else:
-    t = threading.Thread(target = gather)
-    t.start()
+    threading.Thread(target = gather).start()
 log('done')
