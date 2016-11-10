@@ -2,6 +2,7 @@
 
 import os
 import threading
+import time
 
 import rxtxapi
 from gasoline_gatherer import GasolineGatherer
