@@ -21,7 +21,7 @@ class RxtxApi():
             return (-1, "readUrl::error occurred:" + str(error))
 
     def toJSON(self, data):
-        return json.dumps(data)
+        return json.dumps(data, separators = (',', ':'))
 
     def jsonify(self, data, to_json = True):
         if to_json:
