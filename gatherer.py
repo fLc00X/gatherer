@@ -6,6 +6,7 @@ import time
 
 from rxtxapi import RxtxApi
 from gasoline_gatherer import GasolineGatherer
+from weather_gatherer import WeatherGatherer
 
 def log(message):
     print 'gatherer|' + message
@@ -17,23 +18,30 @@ def env(name):
         raise Exception(name + ' is not set up')
 
 def gather():
+    rxtxapi = RxtxApi(env('RXTXAPI_URI'),
+                      {'POST': env('RXTXAPI_POST_KEY'),
+                       'PUT': env('RXTXAPI_PUT_KEY'),
+                       'GET': env('RXTXAPI_GET_KEY'),
+                       'DELETE': env('RXTXAPI_DELETE_KEY')})
     gasolineGatherer = GasolineGatherer(int(env('GATHERER_WORKER_GAS_STATIONS_INTERVAL')),
-                                        RxtxApi(env('RXTXAPI_URI'),
-                                                {'POST': env('RXTXAPI_POST_KEY'),
-                                                 'PUT': env('RXTXAPI_PUT_KEY'),
-                                                 'GET': env('RXTXAPI_GET_KEY'),
-                                                 'DELETE': env('RXTXAPI_DELETE_KEY')}),
+                                        rxtxapi,
                                         env('GATHERER_WORKER_GAS_STATIONS_URL'),
-                                        [s.split(':') for s in env('GATHERER_WORKER_GAS_STATIONS_STATIONS').split(',')])
+                                        [s.split(':') for s in env('GATHERER_WORKER_GAS_STATIONS').split(';')])
+    weatherGatherer = WeatherGatherer(int(env('GATHERER_WORKER_WEATHER_STATIONS_INTERVAL')),
+                                      rxtxapi,
+                                      env('GATHERER_WORKER_WEATHER_STATIONS_URL'),
+                                      [s.split(':') for s in env('GATHERER_WORKER_WEATHER_STATIONS').split(';')])
     while True:
         log('gathering ...')
-        data = gasolineGatherer.gather()
-        if data:
-            log('gasoline:' + str(data))
+        for name, gatherer in (('gasoline', gasolineGatherer),
+                               ('weather', weatherGatherer)):
+            data = gatherer.gather()
+            if data:
+                log(name + ':' + str(data))
         log('finished')
         time.sleep(int(env('GATHERER_WORKER_INTERVAL')))
 
-log('version 0.11')
+log('version 0.12')
 log(__name__)
 if __name__ == '__main__':
     gather()
