@@ -26,7 +26,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
         if code == 200:
             root = ElementTree.fromstring(data)
             for parameter in self.parameters:
-                result[parameter] = str(root.find(self.parameters[parameter]).text)
+                result[parameter] = root.find(self.parameters[parameter]).text
             result['status'] = 'ok'
         return result
 
