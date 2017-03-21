@@ -10,18 +10,16 @@ class TimeSeries(object):
         # granularity in seconds (ex: 60 for a granularity of one minute)
         self._granularity = granularity
         self._data = {}
-        self.dtformat = '%Y-%m-%dT%H:%M:%S.%f'
 
     def __setitem__(self, dt, record):
         self._data[self._roundDT(dt)] = record
+        self._trim()
 
     def __getitem__(self, dt):
         return self._data.get(self._roundDT(dt))
 
     def records(self):
-        self._trim()
-        return [{'timestamp': dt.strftime(self.dtformat),
-                 'record': self._data.get(dt)} \
+        return [(dt, self._data.get(dt)) \
                 for dt in self._range(max(self._data.keys()))]
 
     def _trim(self):
