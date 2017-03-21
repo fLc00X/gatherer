@@ -36,5 +36,5 @@ class BaseGatherer(object):
     def timestamp(self):
         return datetime.datetime.now().strftime(self.dtformat)
 
-    def fromtimestamp(timestamp):
+    def fromtimestamp(self, timestamp):
         return datetime.datetime.strptime(timestamp, self.dtformat)
