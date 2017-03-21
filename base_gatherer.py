@@ -8,6 +8,7 @@ class BaseGatherer(object):
         self.interval = datetime.timedelta(0, interval, 0)
         self.last_run = None;
         self.rxtxapi = rxtxapi
+        self.dtformat = '%Y-%m-%dT%H:%M:%S.%f'
 
     def collect(self):
         raise NotImplementedError
@@ -33,4 +34,7 @@ class BaseGatherer(object):
             return (-1, "BaseGatherer.readUrl::error occurred:" + str(error))
 
     def timestamp(self):
-        return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        return datetime.datetime.now().strftime(self.dtformat)
+
+    def fromtimestamp(timestamp):
+        return datetime.datetime.strptime(timestamp, self.dtformat)
