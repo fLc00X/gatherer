@@ -16,7 +16,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                            'wind_speed':      'wind_mph',
                            'solar_radiation': 'solar_radiation'}
         self.series = {}
-        for station in self.stations:
+        for station, name in self.stations:
             self.series[station] = {}
             self.series[station]['minute'] = timeseries.TimeSeries(3600, 60)
 
