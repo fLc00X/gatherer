@@ -3,6 +3,7 @@
 import xml.etree.ElementTree as ElementTree
 
 import base_gatherer
+import timeseries
 
 class WeatherGatherer(base_gatherer.BaseGatherer):
     def __init__(self, interval, rxtxapi, url, stations):
@@ -17,7 +18,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
         self.series = {}
         for station in self.stations:
             self.series[station] = {}
-            self.series[station]['minute'] = TimeSeries(3600, 60)
+            self.series[station]['minute'] = timeseries.TimeSeries(3600, 60)
 
     def readStation(self, station, name):
         result = {'station': station,
