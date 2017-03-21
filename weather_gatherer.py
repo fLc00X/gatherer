@@ -41,7 +41,9 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             data.append((s, r))
             if r['status'] == 'ok':
                 self.series[s]['minute'][self.fromtimestamp(r['timestamp'])] = r
-            data.append((s + '/minute', self.series[s]['minute'].records())
+            data.append((s + '/minute',
+                         [{'timestamp': t.strftime(self.dtformat), 'record': d}
+                          for t, d in self.series[s]['minute'].records()]))
         return data
 
     def publish(self, data):
