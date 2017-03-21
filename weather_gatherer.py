@@ -14,6 +14,10 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                            'humidity':        'relative_humidity',
                            'wind_speed':      'wind_mph',
                            'solar_radiation': 'solar_radiation'}
+        self.series = {}
+        for station in self.stations:
+            self.series[station] = {}
+            self.series[station]['minute'] = TimeSeries(3600, 60)
 
     def readStation(self, station, name):
         result = {'station': station,
@@ -31,9 +35,15 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
         return result
 
     def collect(self):
-        return [self.readStation(station, name) for station, name in self.stations]
+        data = []
+        for s, r in ((s, self.readStation(s, n)) for s, n in self.stations):
+            data.append((s, r))
+            if r[status'] == 'ok':
+                self.series[s]['minute'][self.fromtimestamp(r['timestamp'])] = r
+            data.append((s + '/minute', self.series[s]['minute'].records())
+        return data
 
     def publish(self, data):
-        for d in data:
-            self.rxtxapi.publish('weather_stations/' + d['station'], d)
+        for parameter, record in data:
+            self.rxtxapi.publish('weather_stations/' + parameter, record)
         return data
