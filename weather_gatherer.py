@@ -49,7 +49,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             data.append((s + '/minute',
                          {'timeseries':
                           [self._formatTimeSeriesRecord(t, r)
-                           for t, r in self.series[s]['minute']]}))
+                           for t, r in self.series[s]['minute'].records()]}))
         return data
 
     def publish(self, data):
