@@ -34,6 +34,7 @@ class RxtxApi():
             return data
 
     def post(self, name, value, to_json = True):
+        ## POST via GET
         #code, data = self.readUrl(self.uri + '/' + name + '?' + \
         #                          urllib.urlencode(
         #                          {'method': 'POST',
@@ -48,6 +49,7 @@ class RxtxApi():
                                   'POST')
 
     def put(self, name, value, to_json = True):
+        ## PUT via GET
         #code, data = self.readUrl(self.uri + '/' + name + '?' + \
         #                          urllib.urlencode(
         #                          {'method': 'PUT',
@@ -64,8 +66,6 @@ class RxtxApi():
                             urllib.urlencode({'api_key': self.keys['GET']}))
 
     def publish(self, name, value, to_json = True):
-        code, data = self.get(name)
-        if code == 200:
-            self.put(name, value, to_json)
-        else:
+        code, data = self.put(name, value, to_json)
+        if code != 200:
             self.post(name, value, to_json)
