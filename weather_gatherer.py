@@ -35,21 +35,21 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             result['status'] = 'ok'
         return result
 
-    def _formatTimeSeriesRecord(self, dt, record):
-        return {'timestamp': dt.strftime(self.dtformat),
-                'record': {k: record[k]
-                           for k in self.parameters} if record else None}
+    def _processSeries(self, series, record):
+        if record['status'] == 'ok':
+            series[self.fromtimestamp(record['timestamp'])] = record
+        result = {}
+        for t, r in series.records():
+            result.setdefault('timestamp', list()).append(t.strftime(self.dtformat))
+            for k in self.parameters:
+                result.setdefault(k, list()).append(r[k] if r else None)
+        return result
 
     def collect(self):
         data = []
         for s, r in ((s, self.readStation(s, n)) for s, n in self.stations):
             data.append((s, r))
-            if r['status'] == 'ok':
-                self.series[s]['minute'][self.fromtimestamp(r['timestamp'])] = r
-            data.append((s + '/minute',
-                         {'timeseries':
-                          [self._formatTimeSeriesRecord(t, r)
-                           for t, r in self.series[s]['minute'].records()]}))
+            data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
         return data
 
     def publish(self, data):
