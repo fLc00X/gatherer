@@ -10,8 +10,12 @@ class RxtxApi():
         self.keys = keys
         self.timeout = timeout
 
-    def readUrl(self, url):
+    def readUrl(self, url, data = None, method = None):
         request = urllib2.Request(url)
+        if data:
+            request.add_data(data)
+        if method in ['GET', 'POST', 'PUT', 'DELETE']:
+            request.get_method = lambda: method
         try:
             response = urllib2.urlopen(request, timeout = self.timeout)
             return (response.getcode(), response.read())
@@ -30,19 +34,28 @@ class RxtxApi():
             return data
 
     def post(self, name, value, to_json = True):
-        code, data = self.readUrl(self.uri + '/' + name + '?' + \
-                                  urllib.urlencode(
-                                  {'method': 'POST',
-                                   'api_key': self.keys['POST'],
+        #code, data = self.readUrl(self.uri + '/' + name + '?' + \
+        #                          urllib.urlencode(
+        #                          {'method': 'POST',
+        #                           'api_key': self.keys['POST'],
+        #                           'name': name,
+        #                           'value': self.jsonify(value, to_json)}))
+        code, data = self.readUrl(self.uri + '/' + name,
+                                  {'api_key': self.keys['POST'],
                                    'name': name,
-                                   'value': self.jsonify(value, to_json)}))
+                                   'value': self.jsonify(value, to_json)},
+                                  'POST')
 
     def put(self, name, value, to_json = True):
-        code, data = self.readUrl(self.uri + '/' + name + '?' + \
-                                  urllib.urlencode(
-                                  {'method': 'PUT',
-                                   'api_key': self.keys['PUT'],
-                                   'value': self.jsonify(value, to_json)}))
+        #code, data = self.readUrl(self.uri + '/' + name + '?' + \
+        #                          urllib.urlencode(
+        #                          {'method': 'PUT',
+        #                           'api_key': self.keys['PUT'],
+        #                           'value': self.jsonify(value, to_json)}))
+        code, data = self.readUrl(self.uri + '/' + name,
+                                  {'api_key': self.keys['PUT'],
+                                   'value': self.jsonify(value, to_json)},
+                                  'PUT')
 
     def get(self, name):
         return self.readUrl(self.uri + '/' + name + '?' + \
