@@ -41,12 +41,12 @@ class RxtxApi():
         #                           'api_key': self.keys['POST'],
         #                           'name': name,
         #                           'value': self.jsonify(value, to_json)}))
-        code, data = self.readUrl(self.uri + '/' + name,
-                                  urllib.urlencode(
-                                  {'api_key': self.keys['POST'],
-                                   'name': name,
-                                   'value': self.jsonify(value, to_json)}),
-                                  'POST')
+        return self.readUrl(self.uri + '/' + name,
+                            urllib.urlencode(
+                            {'api_key': self.keys['POST'],
+                             'name': name,
+                             'value': self.jsonify(value, to_json)}),
+                            'POST')
 
     def put(self, name, value, to_json = True):
         ## PUT via GET
@@ -55,11 +55,11 @@ class RxtxApi():
         #                          {'method': 'PUT',
         #                           'api_key': self.keys['PUT'],
         #                           'value': self.jsonify(value, to_json)}))
-        code, data = self.readUrl(self.uri + '/' + name,
-                                  urllib.urlencode(
-                                  {'api_key': self.keys['PUT'],
-                                   'value': self.jsonify(value, to_json)}),
-                                  'PUT')
+        return self.readUrl(self.uri + '/' + name,
+                            urllib.urlencode(
+                            {'api_key': self.keys['PUT'],
+                             'value': self.jsonify(value, to_json)}),
+                            'PUT')
 
     def get(self, name):
         return self.readUrl(self.uri + '/' + name + '?' + \
