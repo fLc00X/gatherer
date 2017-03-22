@@ -41,9 +41,10 @@ class RxtxApi():
         #                           'name': name,
         #                           'value': self.jsonify(value, to_json)}))
         code, data = self.readUrl(self.uri + '/' + name,
+                                  urllib.urlencode(
                                   {'api_key': self.keys['POST'],
                                    'name': name,
-                                   'value': self.jsonify(value, to_json)},
+                                   'value': self.jsonify(value, to_json)}),
                                   'POST')
 
     def put(self, name, value, to_json = True):
@@ -53,8 +54,9 @@ class RxtxApi():
         #                           'api_key': self.keys['PUT'],
         #                           'value': self.jsonify(value, to_json)}))
         code, data = self.readUrl(self.uri + '/' + name,
+                                  urllib.urlencode(
                                   {'api_key': self.keys['PUT'],
-                                   'value': self.jsonify(value, to_json)},
+                                   'value': self.jsonify(value, to_json)}),
                                   'PUT')
 
     def get(self, name):
