@@ -25,6 +25,7 @@ class BaseGatherer(object):
 
     def readUrl(self, url):
         request = urllib2.Request(url)
+        request.add_header('Cache-Control', 'max-age=0')
         try:
             response = urllib2.urlopen(request)
             return (response.getcode(), response.read())
