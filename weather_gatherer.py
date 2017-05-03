@@ -1,5 +1,6 @@
 #!/bin/python
 
+import random
 import xml.etree.ElementTree as ElementTree
 
 import base_gatherer
@@ -27,7 +28,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                   'timestamp': self.timestamp()}
         for parameter in self.parameters:
             result[parameter] = None
-        code, data = self.readUrl(self.url + '?ID=' + station)
+        code, data = self.readUrl(self.url + '?ID=' + station + '&random=' + str(random.random()))
         if code == 200:
             root = ElementTree.fromstring(data)
             for parameter in self.parameters:
