@@ -25,12 +25,17 @@ class BaseGatherer(object):
 
     def readUrl(self, url):
         request = urllib2.Request(url)
-        request.add_header('Cache-Control', 'max-age=0')
+        request.add_header('Pragma', 'no-cache')
+        request.add_header('Cache-Control', 'no-cache')
         try:
             response = urllib2.urlopen(request)
-            return (response.getcode(), response.read())
+            result = (response.getcode(), response.read())
+            response.close()
+            return result
         except urllib2.HTTPError as httpError:
-            return (httpError.getcode(), httpError.read())
+            result = (httpError.getcode(), httpError.read())
+            httpError.close()
+            return result
         except Exception as error:
             return (-1, "BaseGatherer.readUrl::error occurred:" + str(error))
 
