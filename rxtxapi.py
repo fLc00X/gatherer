@@ -12,15 +12,21 @@ class RxtxApi():
 
     def readUrl(self, url, data = None, method = None):
         request = urllib2.Request(url)
+        request.add_header('Pragma', 'no-cache')
+        request.add_header('Cache-Control', 'no-cache')
         if data:
             request.add_data(data)
         if method in ['GET', 'POST', 'PUT', 'DELETE']:
             request.get_method = lambda: method
         try:
             response = urllib2.urlopen(request, timeout = self.timeout)
-            return (response.getcode(), response.read())
+            result = (response.getcode(), response.read())
+            response.close()
+            return result
         except urllib2.HTTPError as httpError:
-            return (httpError.getcode(), httpError.read())
+            result = (httpError.getcode(), httpError.read())
+            httpError.close()
+            return result
         except Exception as error:
             return (-1, "readUrl::error occurred:" + str(error))
 
