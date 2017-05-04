@@ -1,6 +1,7 @@
 #!/bin/python
 
-import random
+import email.utils
+import time
 import xml.etree.ElementTree as ElementTree
 
 import base_gatherer
@@ -28,13 +29,23 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                   'timestamp': self.timestamp()}
         for parameter in self.parameters:
             result[parameter] = None
-        code, data = self.readUrl(self.url + '?ID=' + station + '&random=' + str(random.random()))
+        code, data = self.readUrl(self.url + '?ID=' + station)
         if code == 200:
             root = ElementTree.fromstring(data)
-            for parameter in self.parameters:
-                result[parameter] = root.find(self.parameters[parameter]).text
-            result['status'] = 'ok'
+            if self._recent(root):
+                for parameter in self.parameters:
+                    result[parameter] = root.find(self.parameters[parameter]).text
+                result['status'] = 'ok'
         return result
+
+    def _recent(self, xml):
+        e = xml.find('observation_time_rfc822')
+        if not e:
+            return False
+        if (time.mktime(time.localtime() -
+            email.utils.mktime_tz(email.utils.parsedate_tz(e.text))) > 1800:
+            return False
+        return True
 
     def _processSeries(self, series, record):
         if record['status'] == 'ok':
