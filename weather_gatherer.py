@@ -42,7 +42,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
         e = xml.find('observation_time_rfc822')
         if not e:
             return False
-        if (time.mktime(time.localtime() -
+        if (time.mktime(time.localtime()) -
             email.utils.mktime_tz(email.utils.parsedate_tz(e.text))) > 1800:
             return False
         return True
