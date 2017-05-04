@@ -20,7 +20,7 @@ class TimeSeries(object):
 
     def records(self):
         return [(dt, self._data.get(dt)) \
-                for dt in self._range(max(self._data.keys()))]
+                for dt in self._range(max(self._data.keys()))] if self._data else []
 
     def _trim(self):
         t = datetime.datetime.fromtimestamp(
