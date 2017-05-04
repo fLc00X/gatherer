@@ -40,12 +40,8 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
 
     def _recent(self, root):
         t = root.findtext('observation_time_rfc822')
-        if t == None:
-            return False
-        if (time.mktime(time.localtime()) -
-            email.utils.mktime_tz(email.utils.parsedate_tz(t))) > 1800:
-            return False
-        return True
+        return ((time.mktime(time.localtime()) -
+                 email.utils.mktime_tz(email.utils.parsedate_tz(t))) > 1800) if t else False
 
     def _processSeries(self, series, record):
         if record['status'] == 'ok':
