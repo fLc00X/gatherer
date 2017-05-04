@@ -34,16 +34,16 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             root = ElementTree.fromstring(data)
             if self._recent(root):
                 for parameter in self.parameters:
-                    result[parameter] = root.find(self.parameters[parameter]).text
+                    result[parameter] = root.findtext(self.parameters[parameter])
                 result['status'] = 'ok'
         return result
 
-    def _recent(self, xml):
-        e = xml.find('observation_time_rfc822')
-        if not e:
+    def _recent(self, root):
+        t = root.findtext('observation_time_rfc822')
+        if t == None:
             return False
         if (time.mktime(time.localtime()) -
-            email.utils.mktime_tz(email.utils.parsedate_tz(e.text))) > 1800:
+            email.utils.mktime_tz(email.utils.parsedate_tz(t))) > 1800:
             return False
         return True
 
