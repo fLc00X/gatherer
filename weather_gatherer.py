@@ -34,7 +34,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             root = ElementTree.fromstring(data)
             if self._recent(root):
                 for parameter in self.parameters:
-                    result[parameter] = root.findtext(self.parameters[parameter])
+                    result[parameter] = root.find(self.parameters[parameter]).text
                 result['status'] = 'ok'
         return result
 
@@ -56,8 +56,9 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
     def collect(self):
         data = []
         for s, r in ((s, self.readStation(s, n)) for s, n in self.stations):
-            data.append((s, r))
-            data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
+            if r['status'] == 'ok':
+                data.append((s, r))
+                data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
         return data
 
     def publish(self, data):
