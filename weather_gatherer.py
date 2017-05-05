@@ -43,7 +43,8 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             root = ElementTree.fromstring(data)
             if self._recent(root):
                 for parameter in self.parameters:
-                    result[parameter] = root.find(self.parameters[parameter]).text
+                    s = root.find(self.parameters[parameter]).text
+                    result[parameter] = float(s) if s else None
                 result['status'] = 'ok'
         return result
 
