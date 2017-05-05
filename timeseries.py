@@ -21,11 +21,11 @@ class TimeSeries(object):
         self._data = {}
 
     def __setitem__(self, dt, record):
-        self._data[self._roundDT(dt)] = record
+        self._data[roundDT(dt, self._granularity)] = record
         self._trim()
 
     def __getitem__(self, dt):
-        return self._data.get(self._roundDT(dt))
+        return self._data.get(roundDT(dt, self._granularity))
 
     def records(self):
         return [(dt, self._data.get(dt)) \
