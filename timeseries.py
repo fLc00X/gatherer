@@ -3,6 +3,15 @@
 import datetime
 import time
 
+def dt2seconds(dt):
+    return int(time.mktime(dt.timetuple()))
+
+def roundSeconds(seconds, granularity):
+    return seconds / granularity * granularity
+
+def roundDT(dt, granularity):
+    return datetime.datetime.fromtimestamp(roundSeconds(dt2seconds(dt)))
+
 class TimeSeries(object):
     def __init__(self, interval, granularity):
         # interval in seconds (ex: 3600 for an interval of one hour)
@@ -24,21 +33,11 @@ class TimeSeries(object):
 
     def _trim(self):
         t = datetime.datetime.fromtimestamp(
-            self._dt2seconds(max(self._data.keys())) - self._interval)
+            dt2seconds(max(self._data.keys())) - self._interval)
         self._data = {k: v for k, v in self._data.items() if k > t}
 
-    def _dt2seconds(self, dt):
-        return int(time.mktime(dt.timetuple()))
-
-    def _roundSeconds(self, seconds):
-        return seconds / self._granularity * self._granularity
-
-    def _roundDT(self, dt):
-        seconds = self._roundSeconds(self._dt2seconds(dt))
-        return datetime.datetime.fromtimestamp(seconds)
-
     def _range(self, dt):
-        seconds = self._roundSeconds(self._dt2seconds(dt))
+        seconds = roundSeconds(dt2seconds(dt), self._granularity)
         return [datetime.datetime.fromtimestamp(seconds + s) \
                 for s in range(-self._interval + self._granularity,
                                self._granularity,
@@ -48,3 +47,33 @@ class TimeSeries(object):
         return 'interval:' + str(self._interval) + \
                ', granularity:' + str(self._granularity) + \
                ', data:' + str(self._data)
+
+class AvgAggregator(object):
+    def __init__(self, granularity, parameter):
+        # granularity in seconds (ex: 60 for a granularity of one minute)
+        self._granularity = granularity
+        # parameter is a key for the value in the record's dictionary
+        # (ex: 'temperature')
+        self._parameter = parameter
+        self._callbacks = []
+        self._lastDT = None;
+        self._sum = 0
+        self._count = 0
+
+    def set(self, dt, record):
+        dt = roundDT(dt, self._granularity)
+        r = self._process(dt, record)
+        for callback in self._callbacks:
+            callback(dt, r)
+
+    def _process(self, dt, record):
+        if self._lastDT != dt:
+            self._lastDT = dt
+            self._sum = 0
+            self._count = 0
+        self._sum += record[self._parameter]
+        self._count += 1
+        return float(self._sum) / self._count
+
+    def addCallback(self, callback):
+        self._callbacks.append(callback)
