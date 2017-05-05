@@ -73,9 +73,11 @@ class AvgAggregator(object):
             self._lastDT = dt
             self._sum = 0
             self._count = 0
-        self._sum += record[self._parameter]
-        self._count += 1
-        return float(self._sum) / self._count
+        v = record.get(self._parameter, None)
+        if v:
+            self._sum += record[self._parameter]
+            self._count += 1
+        return float(self._sum) / self._count if self._count > 0 else None
 
     def addCallback(self, callback):
         self._callbacks.append(callback)
