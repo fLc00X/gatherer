@@ -10,7 +10,8 @@ def roundSeconds(seconds, granularity):
     return seconds / granularity * granularity
 
 def roundDT(dt, granularity):
-    return datetime.datetime.fromtimestamp(roundSeconds(dt2seconds(dt)))
+    return datetime.datetime.fromtimestamp(roundSeconds(dt2seconds(dt),
+                                                        granularity))
 
 class TimeSeries(object):
     def __init__(self, interval, granularity):
@@ -29,7 +30,8 @@ class TimeSeries(object):
 
     def records(self):
         return [(dt, self._data.get(dt)) \
-                for dt in self._range(max(self._data.keys()))] if self._data else []
+                for dt in self._range(max(self._data.keys()))] \
+               if self._data else []
 
     def _trim(self):
         t = datetime.datetime.fromtimestamp(
