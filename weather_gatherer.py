@@ -79,7 +79,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                 data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
                 for k in self.parameters:
                     self.aggregators[s]['avg'][k].set(r)
-                data.append((s + '/hour/avg', self._combineSeries(self.series[s]['hour']['avg']))
+                data.append((s + '/hour/avg', self._combineSeries(self.series[s]['hour']['avg'])))
         return data
 
     def publish(self, data):
