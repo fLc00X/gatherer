@@ -23,6 +23,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             self.series[station] = {}
             self.series[station]['minute'] = timeseries.TimeSeries(3600, 60)
             self.series[station]['hour'] = {'avg': {}}
+            self.aggregators[station] = {'avg': {}}
             for parameter in self.parameters:
                 s = timeseries.TimeSeries(24 * 3600, 3600)
                 a = timeseries.AvgAggregator(3600, parameter)
