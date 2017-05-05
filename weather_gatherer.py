@@ -18,9 +18,17 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                            'wind_speed':      'wind_mph',
                            'solar_radiation': 'solar_radiation'}
         self.series = {}
+        self.aggregators = {}
         for station, name in self.stations:
             self.series[station] = {}
             self.series[station]['minute'] = timeseries.TimeSeries(3600, 60)
+            self.series[station]['hour'] = {'avg': {}}
+            for parameter in self.parameters:
+                s = timeseries.TimeSeries(24 * 3600, 3600)
+                a = timeseries.AvgAggregator(3600, parameter)
+                a.addCallBack(s.__setitem__)
+                self.aggregators[station]['avg'][parameter] = a
+                self.series[station]['hour']['avg'][parameter] = s
 
     def readStation(self, station, name):
         result = {'station': station,
@@ -53,12 +61,25 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                 result.setdefault(k, list()).append(r[k] if r else None)
         return result
 
+    def _combineSeries(self, series):
+        result = {}
+        for k in series:
+            timestamps = []
+            for t, r in series[k].records():
+                timestamps.append(t.strftime(self.dtformat))
+                result.setdefault(k, list()).append(r)
+            result['timestamp'] = timestamps
+        return result
+
     def collect(self):
         data = []
         for s, r in ((s, self.readStation(s, n)) for s, n in self.stations):
             if r['status'] == 'ok':
                 data.append((s, r))
                 data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
+                for k in self.parameters:
+                    self.aggregators[s]['avg'][k].set(r)
+                data.append((s + '/hour/avg', self._combineSeries(self.series[s]['hour']['avg']))
         return data
 
     def publish(self, data):
