@@ -79,9 +79,9 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             if r['status'] == 'ok':
                 data.append((s, r))
                 data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
-                #for a in self.aggregators[s]['avg'].values():
-                #    a.set(self.fromtimestamp(r['timestamp']), r)
-                #data.append((s + '/hour/avg', self._combineSeries(self.series[s]['hour']['avg'])))
+                for a in self.aggregators[s]['avg'].values():
+                    a.set(self.fromtimestamp(r['timestamp']), r)
+                data.append((s + '/hour/avg', self._combineSeries(self.series[s]['hour']['avg'])))
         return data
 
     def publish(self, data):
