@@ -72,5 +72,5 @@ class RxtxApi():
 
     def publish(self, name, value, to_json = True):
         code, data = self.put(name, value, to_json)
-        if code != 200:
+        if code == 200 and json.loads(data).get('result', '') == 'Error':
             self.post(name, value, to_json)
