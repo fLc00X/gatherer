@@ -30,7 +30,8 @@ def gather():
     weatherGatherer = WeatherGatherer(int(env('GATHERER_WORKER_WEATHER_STATIONS_INTERVAL')),
                                       rxtxapi,
                                       env('GATHERER_WORKER_WEATHER_STATIONS_URL'),
-                                      [s.split(':') for s in env('GATHERER_WORKER_WEATHER_STATIONS').split(';')])
+                                      [s.split(':') for s in env('GATHERER_WORKER_WEATHER_STATIONS').split(';')],
+                                      int(env('GATHERER_WORKER_WEATHER_STATIONS_IDLE_INTERVAL')))
     while True:
         log('gathering ...')
         for name, gatherer in (('gasoline', gasolineGatherer),
@@ -41,7 +42,7 @@ def gather():
         log('finished')
         time.sleep(int(env('GATHERER_WORKER_INTERVAL')))
 
-log('version 0.12')
+log('version 0.13')
 log(__name__)
 if __name__ == '__main__':
     gather()
