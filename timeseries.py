@@ -74,7 +74,7 @@ class AvgAggregator(object):
             self._sum = 0
             self._count = 0
         v = record.get(self._parameter, None)
-        if v:
+        if v is not None:
             self._sum += v
             self._count += 1
         return float(self._sum) / self._count if self._count > 0 else None
