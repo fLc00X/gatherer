@@ -11,11 +11,10 @@ class RxtxApi():
         self.timeout = timeout
 
     def readUrl(self, url, data = None, method = None):
-        request = urllib2.Request(url)
-        request.add_header('Pragma', 'no-cache')
-        request.add_header('Cache-Control', 'no-cache')
-        if data:
-            request.add_data(data)
+        request = urllib2.Request(url,
+                                  data,
+                                  {'Pragma': 'no-cache',
+                                   'Cache-Control': 'no-cache'})
         if method in ['GET', 'POST', 'PUT', 'DELETE']:
             request.get_method = lambda: method
         try:
