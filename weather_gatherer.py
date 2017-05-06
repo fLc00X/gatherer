@@ -8,10 +8,11 @@ import base_gatherer
 import timeseries
 
 class WeatherGatherer(base_gatherer.BaseGatherer):
-    def __init__(self, interval, rxtxapi, url, stations):
+    def __init__(self, interval, rxtxapi, url, stations, idleInterval):
         base_gatherer.BaseGatherer.__init__(self, interval, rxtxapi)
         self.url = url
         self.stations = stations
+        self.idleInterval = idleInterval
         self.parameters = {'temperature':     'temp_c',
                            'pressure':        'pressure_mb',
                            'humidity':        'relative_humidity',
@@ -51,14 +52,16 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
     def _recent(self, root):
         t = root.findtext('observation_time_rfc822')
         return ((time.mktime(time.localtime()) -
-                 email.utils.mktime_tz(email.utils.parsedate_tz(t))) < 1800) if t else False
+                 email.utils.mktime_tz(email.utils.parsedate_tz(t))) <
+                self.idleInterval) if t else False
 
     def _processSeries(self, series, record):
         if record['status'] == 'ok':
             series[self.fromtimestamp(record['timestamp'])] = record
         result = {}
         for t, r in series.records():
-            result.setdefault('timestamp', list()).append(t.strftime(self.dtformat))
+            result.setdefault('timestamp',
+                              list()).append(t.strftime(self.dtformat))
             for k in self.parameters:
                 result.setdefault(k, list()).append(r[k] if r else None)
         return result
@@ -78,10 +81,13 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
         for s, r in [(s, self.readStation(s, n)) for s, n in self.stations]:
             if r['status'] == 'ok':
                 data.append((s, r))
-                data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
+                data.append((s + '/minute',
+                             self._processSeries(self.series[s]['minute'], r)))
                 for a in self.aggregators[s]['avg'].values():
                     a.set(self.fromtimestamp(r['timestamp']), r)
-                data.append((s + '/hour/avg', self._combineSeries(self.series[s]['hour']['avg'])))
+                data.append((s + '/hour/avg',
+                             self._combineSeries(
+                             self.series[s]['hour']['avg'])))
         return data
 
     def publish(self, data):
