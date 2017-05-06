@@ -75,7 +75,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
 
     def collect(self):
         data = []
-        for s, r in ((s, self.readStation(s, n)) for s, n in self.stations):
+        for s, r in [(s, self.readStation(s, n)) for s, n in self.stations]:
             if r['status'] == 'ok':
                 data.append((s, r))
                 data.append((s + '/minute', self._processSeries(self.series[s]['minute'], r)))
