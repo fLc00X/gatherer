@@ -64,7 +64,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
 
     def _combineSeries(self, series):
         result = {}
-        for p, s in in series:
+        for p, s in series:
             result['timestamp'] = []
             for t, r in s.records():
                 result['timestamp'].append(t.strftime(self.dtformat))
