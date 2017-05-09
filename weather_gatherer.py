@@ -73,7 +73,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
 
     def _restore(self):
         for s, n in self.stations:
-            code, data = self.get('weather_stations/' + s + '/hour/avg')
+            code, data = self.rxtxapi.get('weather_stations/' + s + '/hour/avg')
             if code == 200:
                 data = json.loads(data)
                 for i, t in enumerate(data['timestamp'], 0):
