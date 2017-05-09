@@ -1,6 +1,7 @@
 #!/bin/python
 
 import email.utils
+import json
 import time
 import xml.etree.ElementTree as ElementTree
 
@@ -20,32 +21,30 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                            'solar_radiation': 'solar_radiation'}
         self.series = {}
         self.aggregators = {}
-        for station, name in self.stations:
-            self.series[station] = {}
-            self.series[station]['minute'] = timeseries.TimeSeries(3600, 60)
-            self.series[station]['hour'] = {'avg': {}}
-            self.aggregators[station] = {'avg': {}}
-            for parameter in self.parameters:
-                s = timeseries.TimeSeries(24 * 3600, 3600)
-                a = timeseries.AvgAggregator(3600, parameter)
-                a.addCallback(s.__setitem__)
-                self.aggregators[station]['avg'][parameter] = a
-                self.series[station]['hour']['avg'][parameter] = s
+        for s, n in self.stations:
+            self.series[s + '_minute'] = timeseries.TimeSeries(3600, 60)
+            for p in self.parameters:
+                ts = timeseries.TimeSeries(24 * 3600, 3600)
+                a = timeseries.AvgAggregator(3600, p)
+                a.addCallback(ts.__setitem__)
+                self.series[s + '_hour_avg_' + p] = ts
+                self.aggregators[s + '_avg_' + p] = a
+        self.firstRun = True
 
     def readStation(self, station, name):
         result = {'station': station,
                   'name': name,
                   'status': 'error',
                   'timestamp': self.timestamp()}
-        for parameter in self.parameters:
-            result[parameter] = None
+        for p in self.parameters:
+            result[p] = None
         code, data = self.readUrl(self.url + '?ID=' + station)
         if code == 200:
             root = ElementTree.fromstring(data)
             if self._recent(root):
-                for parameter in self.parameters:
-                    s = root.find(self.parameters[parameter]).text
-                    result[parameter] = float(s) if s else None
+                for p in self.parameters:
+                    s = root.find(self.parameters[p]).text
+                    result[p] = float(s) if s else None
                 result['status'] = 'ok'
         return result
 
@@ -55,39 +54,51 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                  email.utils.mktime_tz(email.utils.parsedate_tz(t))) <
                 self.idleInterval) if t else False
 
-    def _processSeries(self, series, record):
-        if record['status'] == 'ok':
-            series[self.fromtimestamp(record['timestamp'])] = record
-        result = {}
+    def _processSeries(self, series):
+        result = {'timestamp': []}
         for t, r in series.records():
-            result.setdefault('timestamp',
-                              list()).append(t.strftime(self.dtformat))
-            for k in self.parameters:
-                result.setdefault(k, list()).append(r[k] if r else None)
+            result['timestamp'].append(t.strftime(self.dtformat))
+            for p in self.parameters:
+                result.setdefault(p, list()).append(r[p] if r else None)
         return result
 
     def _combineSeries(self, series):
         result = {}
-        for k in series:
-            timestamps = []
-            for t, r in series[k].records():
-                timestamps.append(t.strftime(self.dtformat))
-                result.setdefault(k, list()).append(r)
-            result['timestamp'] = timestamps
+        for p, s in in series:
+            result['timestamp'] = []
+            for t, r in s.records():
+                result['timestamp'].append(t.strftime(self.dtformat))
+                result.setdefault(p, list()).append(r)
         return result
 
+    def _restore(self):
+        for s, n in self.stations:
+            code, data = self.get('weather_stations/' + s + '/hour/avg')
+            if code == 200:
+                data = json.loads(data)
+                for i, t in enumerate(data['timestamp'], 0):
+                    dt = self.fromtimestamp(t)
+                    for p in self.parameters:
+                        self.series[s + '_hour_avg_' + p][dt] = data[p][i]
+
     def collect(self):
+        if self.firstRun:
+            self._restore()
         data = []
         for s, r in [(s, self.readStation(s, n)) for s, n in self.stations]:
             if r['status'] == 'ok':
+                dt = self.fromtimestamp(r['timestamp'])
+                self.series[s + '_minute'][dt] = r
+                for p in in self.parameters:
+                    self.aggregators[s + '_avg_' + p].set(dt, r)
                 data.append((s, r))
                 data.append((s + '/minute',
-                             self._processSeries(self.series[s]['minute'], r)))
-                for a in self.aggregators[s]['avg'].values():
-                    a.set(self.fromtimestamp(r['timestamp']), r)
+                             self._processSeries(self.series[s + '_minute'])))
                 data.append((s + '/hour/avg',
                              self._combineSeries(
-                             self.series[s]['hour']['avg'])))
+                             [(p, self.series[s + '_hour_avg_' + p])
+                              for p in in self.parameters])))
+        self.firstRun = False
         return data
 
     def publish(self, data):
