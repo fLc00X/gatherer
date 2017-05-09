@@ -89,7 +89,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
             if r['status'] == 'ok':
                 dt = self.fromtimestamp(r['timestamp'])
                 self.series[s + '_minute'][dt] = r
-                for p in in self.parameters:
+                for p in self.parameters:
                     self.aggregators[s + '_avg_' + p].set(dt, r)
                 data.append((s, r))
                 data.append((s + '/minute',
@@ -97,7 +97,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                 data.append((s + '/hour/avg',
                              self._combineSeries(
                              [(p, self.series[s + '_hour_avg_' + p])
-                              for p in in self.parameters])))
+                              for p in self.parameters])))
         self.firstRun = False
         return data
 
