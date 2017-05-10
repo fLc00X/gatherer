@@ -30,8 +30,6 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
             result['regular'] = prices[1] if len(prices) > 1 else -1.00
             result['midgrade'] = prices[3] if len(prices) > 3 else -1.00
             result['premium'] = prices[5] if len(prices) > 5 else -1.00
-        else:
-            print 'gasoline_gatherer|readUrl error:' + str(code) + ',' + data
         return result
 
     def collect(self):
