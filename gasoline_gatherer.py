@@ -1,6 +1,7 @@
 #!/bin/python
 
 import base_gatherer
+from rxtxapi import readUrl
 
 class GasolineGatherer(base_gatherer.BaseGatherer):
     def __init__(self, interval, rxtxapi, url, stations):
@@ -16,7 +17,7 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
                   'regular': -1.00,
                   'midgrade': -1.00,
                   'premium': -1.00}
-        code, data = self.readUrl(self.url + '/' + station)
+        code, data = readUrl(self.url + '/' + station)
         if code == 200:
             prices = []
             for line in data.split('\n'):
