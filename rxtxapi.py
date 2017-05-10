@@ -12,7 +12,7 @@ def readUrl(url, data = None, method = 'GET', timeout = 10):
     if method in ['GET', 'POST', 'PUT', 'DELETE']:
         request.get_method = lambda: method
     try:
-        response = urllib2.urlopen(request, timeout)
+        response = urllib2.urlopen(request, timeout = timeout)
         result = (response.getcode(), response.read())
         response.close()
         return result
