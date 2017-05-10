@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ElementTree
 
 import base_gatherer
 import timeseries
+from rxtxapi import readUrl
 
 class WeatherGatherer(base_gatherer.BaseGatherer):
     def __init__(self, interval, rxtxapi, url, stations, idleInterval):
@@ -38,7 +39,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                   'timestamp': self.timestamp()}
         for p in self.parameters:
             result[p] = None
-        code, data = self.readUrl(self.url + '?ID=' + station)
+        code, data = readUrl(self.url + '?ID=' + station)
         if code == 200:
             root = ElementTree.fromstring(data)
             if self._recent(root):
