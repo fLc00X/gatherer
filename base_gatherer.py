@@ -1,7 +1,6 @@
 #!/bin/python
 
 import datetime
-import urllib2
 
 class BaseGatherer(object):
     def __init__(self, interval, rxtxapi):
@@ -22,22 +21,6 @@ class BaseGatherer(object):
             return
         self.last_run = now
         return self.publish(self.collect())
-
-    def readUrl(self, url):
-        request = urllib2.Request(url)
-        request.add_header('Pragma', 'no-cache')
-        request.add_header('Cache-Control', 'no-cache')
-        try:
-            response = urllib2.urlopen(request)
-            result = (response.getcode(), response.read())
-            response.close()
-            return result
-        except urllib2.HTTPError as httpError:
-            result = (httpError.getcode(), httpError.read())
-            httpError.close()
-            return result
-        except Exception as error:
-            return (-1, "BaseGatherer.readUrl::error occurred:" + str(error))
 
     def timestamp(self):
         return datetime.datetime.now().strftime(self.dtformat)
