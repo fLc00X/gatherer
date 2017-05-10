@@ -81,7 +81,7 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
                     r = {'timestamp': t}
                     for p in self.parameters:
                         r[p] = data[p][i] if p in data else None
-                    self.series[s + '/minute'][self.fromtimestamp(t)] = r
+                    self.series[s + '_minute'][self.fromtimestamp(t)] = r
             code, data = self.rxtxapi.get('weather_stations/' + s + '/hour/avg')
             if code == 200:
                 data = json.loads(data)
