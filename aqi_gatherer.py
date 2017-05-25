@@ -16,7 +16,7 @@ class AqiGatherer(base_gatherer.BaseGatherer):
                   'timestamp': self.timestamp(),
                   'ozone': -1.00,
                   'pollution': -1.00}
-        code, data = readUrl(self.url + '/' + station)
+        code, data = readUrl(self.url + '/' + station + '.xml')
         if code == 200:
             prefix = ' - '
             markers = {'ozone': ' AQI - Ozone',
