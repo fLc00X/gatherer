@@ -32,9 +32,14 @@ def gather():
                                       env('GATHERER_WORKER_WEATHER_STATIONS_URL'),
                                       [s.split(':') for s in env('GATHERER_WORKER_WEATHER_STATIONS').split(';')],
                                       int(env('GATHERER_WORKER_WEATHER_STATIONS_IDLE_INTERVAL')))
+    aqiGatherer = AqiGatherer(int(env('GATHERER_WORKER_AQI_STATIONS_INTERVAL')),
+                              rxtxapi,
+                              env('GATHERER_WORKER_AQI_STATIONS_URL'),
+                              [s.split(':') for s in env('GATHERER_WORKER_AQI_STATIONS').split(';')])
     while True:
         for name, gatherer in (('gasoline', gasolineGatherer),
-                               ('weather', weatherGatherer)):
+                               ('weather', weatherGatherer),
+                               ('aqi', aqiGatherer)):
             log('gathering [' + name + '] ...')
             data = gatherer.gather()
             if data:
@@ -42,7 +47,7 @@ def gather():
         log('finished')
         time.sleep(int(env('GATHERER_WORKER_INTERVAL')))
 
-log('version 0.14')
+log('version 0.15')
 log(__name__)
 if __name__ == '__main__':
     gather()
