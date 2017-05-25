@@ -27,7 +27,7 @@ class AqiGatherer(base_gatherer.BaseGatherer):
                         if suffix in line:
                             result[key] = int(line.split(suffix)[0]
                                                   .split(prefix)[1]
-                                                  .trim())
+                                                  .strip())
             result['status'] = 'ok'
         return result
 
