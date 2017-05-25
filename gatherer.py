@@ -7,6 +7,7 @@ import time
 from rxtxapi import RxtxApi
 from gasoline_gatherer import GasolineGatherer
 from weather_gatherer import WeatherGatherer
+from aqi_gatherer import AqiGatherer
 
 def log(message):
     print 'gatherer|' + message
@@ -47,7 +48,7 @@ def gather():
         log('finished')
         time.sleep(int(env('GATHERER_WORKER_INTERVAL')))
 
-log('version 0.15')
+log('version 0.16')
 log(__name__)
 if __name__ == '__main__':
     gather()
