@@ -37,4 +37,4 @@ class AqiGatherer(base_gatherer.BaseGatherer):
     def publish(self, data):
         for d in data:
             self.rxtxapi.publish('aqi_stations/' + d['station'], d)
-return data
+        return data
