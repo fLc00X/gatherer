@@ -50,7 +50,7 @@ class TimeSeries(object):
                ', granularity:' + str(self._granularity) + \
                ', data:' + str(self._data)
 
-class AvgAggregator(object):
+class Aggregator(object):
     def __init__(self, granularity, parameter):
         # granularity in seconds (ex: 60 for a granularity of one minute)
         self._granularity = granularity
@@ -59,14 +59,24 @@ class AvgAggregator(object):
         self._parameter = parameter
         self._callbacks = []
         self._lastDT = None;
-        self._sum = 0
-        self._count = 0
 
     def set(self, dt, record):
         dt = roundDT(dt, self._granularity)
         r = self._process(dt, record)
         for callback in self._callbacks:
             callback(dt, r)
+
+    def _process(self, dt, record):
+        raise NotImplementedError
+
+    def addCallback(self, callback):
+        self._callbacks.append(callback)
+
+class AvgAggregator(Aggregator):
+    def __init__(self, granularity, parameter):
+        Aggregator.__init__(self, granularity, parameter)
+        self._sum = 0
+        self._count = 0
 
     def _process(self, dt, record):
         if self._lastDT != dt:
@@ -78,6 +88,3 @@ class AvgAggregator(object):
             self._sum += v
             self._count += 1
         return float(self._sum) / self._count if self._count > 0 else None
-
-    def addCallback(self, callback):
-        self._callbacks.append(callback)
