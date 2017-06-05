@@ -88,3 +88,20 @@ class AvgAggregator(Aggregator):
             self._sum += v
             self._count += 1
         return float(self._sum) / self._count if self._count > 0 else None
+
+class MaxAggregator(Aggregator):
+    def __init__(self, granularity, parameter):
+        Aggregator.__init__(self, granularity, parameter)
+        self._max = None
+
+    def _process(self, dt, record):
+        if self._lastDT != dt:
+            self._lastDT = dt
+            self._max = None
+        v = record.get(self._parameter, None)
+        if self._max is None:
+            self._max = v
+        else:
+            if v is not None and v > self._max:
+                self._max = v
+        return self._max
