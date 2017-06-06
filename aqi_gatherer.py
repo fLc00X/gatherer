@@ -12,7 +12,7 @@ class AqiGatherer(base_gatherer.BaseGatherer):
         self.parameters = ['ozone', 'pollution']
         self.series = {}
         self.aggregators = {}
-        for s in self.stations:
+        for s, n in self.stations:
             for p in self.parameters:
                 ts = timeseries.TimeSeries(24 * 3600, 3600)
                 a = timeseries.MaxAggregator(3600, p)
