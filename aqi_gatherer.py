@@ -1,5 +1,7 @@
 #!/bin/python
 
+import json
+
 import base_gatherer
 import timeseries
 from rxtxapi import readUrl
