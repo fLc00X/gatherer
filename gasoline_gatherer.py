@@ -23,12 +23,10 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
             for line in data.split('<'):
                 if 'ui header styles__price___1wJ_R' in line:
                     prices.append(line.split('$')[1])
-                else:
-                    prices.append(-1.00)
             result['status'] = 'ok'
-            result['regular'] = prices[1] if len(prices) > 1 else -1.00
-            result['midgrade'] = prices[3] if len(prices) > 3 else -1.00
-            result['premium'] = prices[5] if len(prices) > 5 else -1.00
+            result['regular'] = prices[0] if len(prices) >= 1 else -1.00
+            result['midgrade'] = prices[1] if len(prices) >= 2 else -1.00
+            result['premium'] = prices[2] if len(prices) >= 3 else -1.00
         return result
 
     def collect(self):
