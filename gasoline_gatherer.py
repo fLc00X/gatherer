@@ -20,12 +20,11 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
         code, data = readUrl(self.url + '/' + station)
         if code == 200:
             prices = []
-            for line in data.split('\n'):
-                if '<div class="price-display' in line:
-                    if 'credit-price' in line:
-                        prices.append(line.split('>')[1].split('<')[0])
-                    else:
-                        prices.append(-1.00)
+            for line in data.split('<'):
+                if 'ui header styles__price___1wJ_R' in line:
+                    prices.append(line.split('$')[1])
+                else:
+                    prices.append(-1.00)
             result['status'] = 'ok'
             result['regular'] = prices[1] if len(prices) > 1 else -1.00
             result['midgrade'] = prices[3] if len(prices) > 3 else -1.00
