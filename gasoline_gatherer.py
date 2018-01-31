@@ -21,7 +21,7 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
         if code == 200:
             prices = []
             for line in data.split('<'):
-                if 'ui header styles__price___1wJ_R' in line:
+                if 'ui header styles__price___1wJ_R' in line and '$' in line:
                     prices.append(line.split('$')[1])
             result['status'] = 'ok'
             result['regular'] = prices[0] if len(prices) >= 1 else -1.00
