@@ -4,11 +4,10 @@ import json
 import urllib
 import urllib2
 
-def readUrl(url, data = None, method = 'GET', timeout = 10):
-    request = urllib2.Request(url,
-                              data,
-                              {'Pragma': 'no-cache',
-                               'Cache-Control': 'no-cache'})
+def readUrl(url, data = None, method = 'GET', timeout = 10, headers = {}):
+    headers['Pragma'] = 'no-cache'
+    headers['Cache-Control'] = 'no-cache'
+    request = urllib2.Request(url, data, headers)
     if method in ['GET', 'POST', 'PUT', 'DELETE']:
         request.get_method = lambda: method
     try:
