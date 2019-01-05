@@ -27,6 +27,8 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
                         result[grades[index]] = line.split('$')[1]
                     index += 1
             result['status'] = 'ok'
+        else:
+            result['errorMessage'] = data
         return result
 
     def collect(self):
