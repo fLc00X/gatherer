@@ -28,7 +28,7 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
                     index += 1
             result['status'] = 'ok'
         else:
-            result['errorMessage'] = data
+            result['errorCode'] = code
         return result
 
     def collect(self):
