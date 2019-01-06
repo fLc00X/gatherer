@@ -22,7 +22,8 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
         if code == 200:
             index = 0
             for line in data.split('<'):
-                if 'styles__price___1wJ_R">' in line:
+                pattern = 'styles__price___1wJ_R">'
+                if pattern in line and len(line) > len(pattern):
                     if '$' in line and index < len(grades):
                         result[grades[index]] = line.split('$')[1]
                     index += 1
