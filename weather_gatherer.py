@@ -51,9 +51,14 @@ class WeatherGatherer(base_gatherer.BaseGatherer):
 
     def _recent(self, root):
         t = root.findtext('observation_time_rfc822')
-        return ((time.mktime(time.localtime()) -
-                 email.utils.mktime_tz(email.utils.parsedate_tz(t))) <
-                self.idleInterval) if t else False
+        if not t:
+            return False
+        d = email.utils.parsedate_tz(t)
+        if not type(d) is tuple:
+            return False
+        if len(d) != 10:
+            return False
+        return (time.mktime(time.localtime()) - email.utils.mktime_tz(d)) < self.idleInterval
 
     def _processSeries(self, series):
         result = {'timestamp': []}
