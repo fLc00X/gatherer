@@ -1,6 +1,7 @@
 #!/bin/python
 
 import base_gatherer
+import datetime
 from rxtxapi import readUrl
 
 class GasolineGatherer(base_gatherer.BaseGatherer):
@@ -32,10 +33,16 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
             result['errorCode'] = code
         return result
 
+    def date(self):
+        return datetime.datetime.now().strftime('%Y-%m-%d')
+
     def collect(self):
         return [self.readStation(station, name) for station, name in self.stations]
 
     def publish(self, data):
         for d in data:
             self.rxtxapi.publish('gas_stations/' + d['station'], d)
+            self.rxtxapi.publish('/'.join(['gas_stations',
+                                           d['station'],
+                                           self.date()]), d)
         return data
