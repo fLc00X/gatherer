@@ -23,7 +23,7 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
         if code == 200:
             index = 0
             for line in data.split('<'):
-                pattern = 'GasPrices__price___15pZx">'
+                pattern = 'FuelTypePriceDisplay__price___3iizb">'
                 if pattern in line and len(line.split(pattern)[1]) > 0:
                     if '$' in line and index < len(grades):
                         result[grades[index]] = line.split('$')[1]
