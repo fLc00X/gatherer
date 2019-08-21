@@ -35,14 +35,14 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
         if code == 200:
             index = -1
             for line in data.split('<'):
-                _index = self.parseGrade(line)
-                if _index != -1:
-                    index = _index
+                i = self.parseGrade(line)
+                if i != -1:
+                    index = i
                     continue
                 if index > -1:
-                    price = self.parsePrice(line)
-                    if price > 0 and result[grades[index]] == -1.0:
-                        result[grades[index]] = price
+                    p = self.parsePrice(line)
+                    if p > 0 and result[grades[index]] == -1.0:
+                        result[grades[index]] = p
             result['status'] = 'ok'
         else:
             result['errorCode'] = code
