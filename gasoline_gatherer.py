@@ -11,9 +11,9 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
         self.stations = stations
 
     def parseGrade(self, line):
-        for id, grade in enumerate(['">Regular', '">Midgrade', '">Premium']):
+        for index, grade in enumerate(['">Regular', '">Midgrade', '">Premium']):
             if grade in line:
-                return id
+                return index
         return -1
 
     def parsePrice(self, line):
@@ -33,15 +33,16 @@ class GasolineGatherer(base_gatherer.BaseGatherer):
         code, data = readUrl(url = self.url + '/' + station,
                              headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'})
         if code == 200:
-            index = 0
+            index = -1
             for line in data.split('<'):
                 _index = self.parseGrade(line)
                 if _index != -1:
                     index = _index
                     continue
-                price = self.parsePrice(line)
-                if result[grades[index]] == -1.0 and price > 0:
-                    result[grades[index]] = price
+                if index > -1:
+                    price = self.parsePrice(line)
+                    if price > 0 and result[grades[index]] == -1.0:
+                        result[grades[index]] = price
             result['status'] = 'ok'
         else:
             result['errorCode'] = code
