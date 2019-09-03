@@ -100,9 +100,9 @@ atexit.register(lambda: scheduler.shutdown())
 
 log('version ' + VERSION)
 log(__name__)
-if __name__ == '__main__':
-    threading.Thread(target = gather).start()
-    app.run(host = '0.0.0.0',
-            port = int(os.getenv('PORT', 8000)),
-            debug = False)
+log('port:' + os.getenv('PORT', 'undefined'))
+threading.Thread(target = gather).start()
+app.run(host = '0.0.0.0',
+        port = int(os.getenv('PORT', 8000)),
+        debug = False)
 log('done')
