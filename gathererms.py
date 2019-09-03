@@ -11,7 +11,7 @@ from gasoline_gatherer import GasolineGatherer
 from rxtxapi import RxtxApi
 from weather_gatherer import WeatherGatherer
 
-VERSION = '0.22'
+VERSION = '0.23'
 started = datetime.utcnow()
 _status = {}
 
@@ -102,7 +102,8 @@ log('version ' + VERSION)
 log(__name__)
 if __name__ == '__main__':
     threading.Thread(target = gather).start()
-    app.run(host = '0.0.0.0',
-            port = int(os.getenv('PORT', 8000)),
-            debug = False)
+    app.run()
+    #app.run(host = '0.0.0.0',
+    #        port = int(os.getenv('PORT', 8000)),
+    #        debug = False)
 log('done')
