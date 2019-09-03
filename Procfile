@@ -1,1 +1,1 @@
-web: python -u gathererms.py
+web: gunicorn gathererms.py:app
