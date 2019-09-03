@@ -102,7 +102,8 @@ log('version ' + VERSION)
 log(__name__)
 log('port:' + os.getenv('PORT', 'undefined'))
 threading.Thread(target = gather).start()
-app.run(host = '0.0.0.0',
-        port = int(os.getenv('PORT', 8000)),
-        debug = False)
+#app.run(host = '0.0.0.0',
+#        port = int(os.getenv('PORT', 8000)),
+#        debug = False)
+app.run()
 log('done')
