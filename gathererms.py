@@ -11,16 +11,20 @@ from gasoline_gatherer import GasolineGatherer
 from rxtxapi import RxtxApi
 from weather_gatherer import WeatherGatherer
 
-VERSION = '0.24'
+VERSION = '0.25'
 started = datetime.utcnow()
 _status = {}
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
+@app.route('/', methods = ['GET'])
+def root():
+    return jsonify({'name': 'fLc002 @IBM Cloud Foundry'})
+
 @app.route('/api', methods = ['GET'])
 def version():
-    return jsonify({'name': 'fLc004 @IBM Cloud Foundry',
+    return jsonify({'name': 'fLc002 @IBM Cloud Foundry',
                     'version': VERSION,
                     'uptime': (datetime.utcnow() - started).total_seconds()})
 
