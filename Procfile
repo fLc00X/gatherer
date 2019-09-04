@@ -1,1 +1,1 @@
-web: gunicorn gathererms:app
+web: gunicorn gathererms:app --log-file -
