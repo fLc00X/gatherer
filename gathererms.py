@@ -12,7 +12,7 @@ from rxtxapi import RxtxApi
 from weather_gatherer import WeatherGatherer
 
 _name = 'fLc002 - Gatherer'
-VERSION = '0.27'
+VERSION = '0.28'
 started = datetime.utcnow()
 _status = {}
 
@@ -23,19 +23,20 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 def root():
     return jsonify({'name': _name})
 
-def _version():
+def _about():
     return {'name': _name,
             'version': VERSION,
             'uptime': (datetime.utcnow() - started).total_seconds()}
 
 @app.route('/api', methods = ['GET'])
-def version():
-    return jsonify(_version())
+def about():
+    return jsonify(_about())
 
 @app.route('/api/status', methods = ['GET'])
 def status():
-    s = _version()
-    s['status'] = _status
+    s = {}
+    s['api'] = _about()
+    s['gatherers'] = _status
     return jsonify(s)
 
 @app.errorhandler(400)
