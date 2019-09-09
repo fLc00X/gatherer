@@ -12,7 +12,7 @@ from rxtxapi import RxtxApi
 from weather_gatherer import WeatherGatherer
 
 _name = 'fLc002 - Gatherer'
-VERSION = '0.26'
+VERSION = '0.27'
 started = datetime.utcnow()
 _status = {}
 
@@ -35,7 +35,7 @@ def version():
 @app.route('/api/status', methods = ['GET'])
 def status():
     s = _version()
-    s.update(_status)
+    s['status'] = _status
     return jsonify(s)
 
 @app.errorhandler(400)
