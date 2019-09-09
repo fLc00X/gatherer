@@ -11,7 +11,8 @@ from gasoline_gatherer import GasolineGatherer
 from rxtxapi import RxtxApi
 from weather_gatherer import WeatherGatherer
 
-VERSION = '0.25'
+_name = 'fLc002 - Gatherer'
+VERSION = '0.26'
 started = datetime.utcnow()
 _status = {}
 
@@ -20,17 +21,22 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 @app.route('/', methods = ['GET'])
 def root():
-    return jsonify({'name': 'fLc002 @IBM Cloud Foundry'})
+    return jsonify({'name': _name})
+
+def _version():
+    return {'name': _name,
+            'version': VERSION,
+            'uptime': (datetime.utcnow() - started).total_seconds()}
 
 @app.route('/api', methods = ['GET'])
 def version():
-    return jsonify({'name': 'fLc002 @IBM Cloud Foundry',
-                    'version': VERSION,
-                    'uptime': (datetime.utcnow() - started).total_seconds()})
+    return jsonify(_version())
 
 @app.route('/api/status', methods = ['GET'])
 def status():
-    return jsonify(_status)
+    s = _version()
+    s.update(_status)
+    return jsonify(s)
 
 @app.errorhandler(400)
 def bad_request(error):
